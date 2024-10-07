@@ -30,7 +30,7 @@ class CustomDataset(torch.utils.data.Dataset):
             img = img.transpose((2, 0, 1))
             self.imgs.append(img)
 
-        self.imgs = numpy.asarray(self.imgs)
+        self.imgs = numpy.array(self.imgs)
         self.lables = numpy.asarray(self.lables)
     def __len__(self):
         return len(self.lables)
