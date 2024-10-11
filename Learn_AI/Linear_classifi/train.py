@@ -9,12 +9,12 @@ loss = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model_t.parameters(), lr=1e-3)
 
 model_t.train()
-for i in range(1, epochs + 1) :
-    for d in range(0, len(data.feature)) :
+for i in range(1, epochs) :
+    for d in range(0, len(data.feature) - 1) :
         pred = model_t(data.feature[d])
         losses = loss(pred, data.species_n[d])
         optimizer.zero_grad()
-        loss.backward()
+        losses.backward()
         optimizer.step()
     print(f'{i} epoch : \n {loss.item()}')
 

@@ -17,11 +17,11 @@ species_num = {
     'Sillaginopsis_panijus' : 8
 }
 
-data_path = r'Linear_classifi\fish_data.csv'
+data_path = r'Learn_AI\Linear_classifi\fish_data.csv'
 
 species = pd.read_csv(data_path, usecols=['species'])
 feature = pd.read_csv(data_path, usecols=['length', 'weight', 'w_l_ratio'])
-feature = torch.tensor(feature.values, dtype=float)
+feature = torch.tensor(feature.values).float()
 species_n = []
 
 print(feature)
