@@ -2,35 +2,41 @@ import torch
 import numpy as np
 import pandas as pd
 import torch.nn.functional as F
+import torch.utils
+import torch.utils.data
 
 device = ('cuda' if torch.cuda.is_available() else 'cpu')
 
-species_num = {
-    'Anabas_testudineus' : 0,
-    'Coilia_dussumieri' : 1,
-    'Otolithoides_biauritus' : 2,
-    'Otolithoides_pama' : 3,
-    'Pethia_conchonius' : 4,
-    'Polynemus_paradiseus' : 5,
-    'Puntius_lateristriga' : 6,
-    'Setipinna_taty' : 7,
-    'Sillaginopsis_panijus' : 8
-}
-
 data_path = r'Learn_AI\Linear_classifi\fish_data.csv'
 
-species = pd.read_csv(data_path, usecols=['species'])
-feature = pd.read_csv(data_path, usecols=['length', 'weight', 'w_l_ratio'])
-feature = torch.tensor(feature.values).float()
-species_n = []
+class fish_data(torch.utils.data.Dataset) :
 
-print(feature)
-
-print(len(species))
-for i in range(1, len(species)) :
-    species_n.append(species_num[species['species'][i]])
-species_n = torch.tensor(species_n)
-species_n = F.one_hot(species_n, num_classes=9).float()
-print(species_n)
-
-
+    def __init__(self, path) -> None:
+        df = pd.read_csv(path)
+        self.species_num = {
+            'Anabas_testudineus' : 0,
+            'Coilia_dussumieri' : 1,
+            'Otolithoides_biauritus' : 2,
+            'Otolithoides_pama' : 3,
+            'Pethia_conchonius' : 4,
+            'Polynemus_paradiseus' : 5,
+            'Puntius_lateristriga' : 6,
+            'Setipinna_taty' : 7,
+            'Sillaginopsis_panijus' : 8
+        }
+        self.label = np.array(list(df.iloc[:, 1:].values))
+        self.label = np.array(map(lambda x: self.species_num[x], self.label))
+        self.feature = np.array(df.iloc[:,1:].values, dtype=float)
+        self.length = len(df)
+        
+    def __getitem__(self, index) :
+        x = torch.LongTensor(self.label[index])
+        y = torch.LongTensor(self.feature[index])
+        return x, y
+        
+    def __len__(self) :
+        return self.length
+    
+train_dataset = fish_data(data_path)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=128, shuffle=True)
+print(train_dataloader.dataset.__getitem__(0))
