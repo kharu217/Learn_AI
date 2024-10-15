@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import pandas as pd
 import torch.nn.functional as F
+from torch.utils.data import DataLoader, Dataset
 
 device = ('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -17,20 +18,18 @@ species_num = {
     'Sillaginopsis_panijus' : 8
 }
 
-data_path = r'Learn_AI\Linear_classifi\fish_data.csv'
+class fish_data(Dataset) :
+    def __init__(self, data_path) :
+        data = pd.read_csv(data_path)
+        self.species = data.loc[:, ('species')].values
+        self.species = torch.tensor(list(map(lambda x : species_num[x] ,self.species)), dtype=torch.float32)
+        self.species = torch.nn.functional.one_hot(self.species.to(torch.int64), 9)
+        self.feature = torch.from_numpy(data.loc[:, ['length', 'weight', 'w_l_ratio']].values).float()
+        
+    def __len__(self) :
+        return len(self.feature)
 
-species = pd.read_csv(data_path, usecols=['species'])
-feature = pd.read_csv(data_path, usecols=['length', 'weight', 'w_l_ratio'])
-feature = torch.tensor(feature.values).float()
-species_n = []
-
-print(feature)
-
-print(len(species))
-for i in range(1, len(species)) :
-    species_n.append(species_num[species['species'][i]])
-species_n = torch.tensor(species_n)
-species_n = F.one_hot(species_n, num_classes=9).float()
-print(species_n)
+    def __getitem__(self, index):
+        return self.feature[index] ,self.species[index]
 
 
