@@ -31,5 +31,3 @@ class fish_data(Dataset) :
 
     def __getitem__(self, index):
         return self.feature[index] ,self.species[index]
-
-
