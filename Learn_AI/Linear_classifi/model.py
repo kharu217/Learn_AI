@@ -4,14 +4,34 @@ import torch.nn as nn
 class fish_classify(torch.nn.Module) :
     def __init__(self):
         super().__init__()
-        self.layer1 = nn.Linear(3,12)
-        self.layer2 = nn.Linear(12, 12)
-        self.layer3 = nn.Linear(12, 9)
-        self.relu = nn.ReLU()
-        self.softmax = nn.Softmax()
+        self.layer1 = nn.Linear(3,64)
+        self.relu1 = nn.ReLU()
+
+        self.dropout1 = nn.Dropout(0.2)
+
+        self.layer2 = nn.Linear(64, 32)
+        self.relu2 = nn.ReLU()
+
+        self.dropout2 = nn.Dropout1d(0.2)
+
+        self.layer3 = nn.Linear(32, 16)
+        self.relu3 = nn.ReLU()
+
+        self.layer4 = nn.Linear(16, 9)
+        self.sfmax = nn.Softmax()
+
     
     def forward(self, x) :
-        x = self.relu(self.layer1(x))
-        x = self.relu(self.layer2(x))
-        x = self.softmax(self.layer3(x))
-        return x
+        out = self.layer1(x)
+        out = self.relu1(out)
+
+        out = self.layer2(out)
+        out = self.relu2(out)
+
+        out = self.layer3(out)
+        out = self.relu3(out)
+
+        out = self.layer4(out)
+        out = self.sfmax(out)
+
+        return out

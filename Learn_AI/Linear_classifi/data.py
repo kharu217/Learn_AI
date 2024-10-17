@@ -24,6 +24,7 @@ class fish_data(Dataset) :
         self.species = data.loc[:, ('species')].values
         self.species = torch.tensor(list(map(lambda x : species_num[x] ,self.species)), dtype=torch.float32)
         self.species = torch.nn.functional.one_hot(self.species.to(torch.int64), 9)
+
         self.feature = torch.from_numpy(data.loc[:, ['length', 'weight', 'w_l_ratio']].values).float()
         
     def __len__(self) :

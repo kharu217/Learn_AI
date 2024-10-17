@@ -1,5 +1,5 @@
 import torch
-from SUB_AI.model import sub_model
+from model import sub_model
 
 x_data = [[10, 5],[69, 19],[6, 2],[2,1],[53, 10],[4,3], [6,5], [1000, 121], [10,9], [8, 7]]
 y_data = [[5], [50], [4], [1], [43], [1], [1], [879], [1], [1]]
@@ -7,7 +7,9 @@ y_data = [[5], [50], [4], [1], [43], [1], [1], [879], [1], [1]]
 x_data = torch.FloatTensor(x_data)
 y_data = torch.FloatTensor(y_data)
 
-model = sub_model()
+model = torch.nn.Sequential(
+    torch.nn.Linear(2, 1)
+)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=1)
 
